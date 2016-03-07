@@ -1,0 +1,9 @@
+{
+  "extends": "angular",
+  "env": {
+    "es6": true
+  },
+  "rules": {
+    "angular/log": 0
+  }
+}

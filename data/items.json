@@ -1,0 +1,43 @@
+[
+  {
+    "name": "Recipe"
+  },
+  {
+    "name": "Broadsword"
+  },
+  {
+    "name": "Robe of the Magi"
+  },
+  {
+    "name": "Chainmail"
+  },
+  {
+    "name": "Sage's Mask"
+  },
+  {
+    "name": "Talisman of Evasion"
+  },
+  {
+    "name": "Blade Mail",
+    "requirements": [
+      "Broadsword",
+      "Chainmail",
+      "Robe of the Magi"
+    ]
+  },
+  {
+    "name": "Medallion of Courage",
+    "requirements": [
+      "Chainmail",
+      "Sage's Mask",
+      "Recipe"
+    ]
+  },
+  {
+    "name": "Solar Crest",
+    "requirements": [
+      "Medallion of Courage",
+      "Talisman of Evasion"
+    ]
+  }
+]

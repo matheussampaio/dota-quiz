@@ -1,0 +1,19 @@
+/************************************
+ *
+ *  Main Styles to compile. Here only @imports!
+ *
+ ************************************/
+
+@import "_grid.scss";
+
+body {
+  background-color: #111;
+  color: #CCC;
+}
+
+/**
+ * INJECTED COMPONENTS SCSS
+ */
+
+//- inject:scss
+//- endinject

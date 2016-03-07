@@ -1,0 +1,20 @@
+[
+  {
+    "target": "Medallion of Courage",
+    "wrong": [
+      "Broadsword",
+      "Robe of the Magi",
+      "Talisman of Evasion"
+    ]
+  },
+  {
+    "target": "Solar Crest",
+    "wrong": [
+      "Broadsword",
+      "Robe of the Magi",
+      "Chainmail",
+      "Sage's Mask",
+      "Recipe"
+    ]
+  }
+]

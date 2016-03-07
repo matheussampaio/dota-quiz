@@ -1,0 +1,30 @@
+<div id="quiz-container">
+  <div class="target-container">
+    <img class="target-icon"
+      ng-src="{{$ctrl.iconTarget}}"
+      alt="$ctrl.data.target.name">
+  </div>
+
+  <div class="answers-container">
+    <img class="answer-icon"
+      ng-repeat="req in $ctrl.answers track by $index"
+      ng-src="{{req.icon}}"
+      ng-click="$ctrl.unselect($index)"
+      alt="{{req.alt}}">
+  </div>
+
+  <div class="choices-container">
+    <img class="choice-icon"
+      ng-repeat="choice in $ctrl.choices"
+      ng-src="{{choice.icon}}"
+      ng-click="$ctrl.select(choice)"
+      ng-class="{disabled: choice.selected}"
+      alt="{{choice.name}}">
+  </div>
+
+  <div class="score-continer">
+    <div>Guesses Left: 3</div>
+    <div>Score: 0</div>
+    <div>0 in a row</div>
+  </div>
+</div>
