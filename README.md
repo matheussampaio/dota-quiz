@@ -6,6 +6,7 @@
 - Node.js v5.1.0
 - MongoDB v3.2.1
 - NPM v3.5.0
+- Gulp 3.9.0
 
 # How to Install:
 
@@ -16,7 +17,7 @@ $ npm install
 
 # How to Execute:
 
-After start the MongoDB, inside the project folder (after installing the dependencies), execute:
+Inside the project folder, execute (make sure you already start the MongoDB):
 ```
 $ node start
 ```

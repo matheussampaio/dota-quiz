@@ -4,6 +4,7 @@
   "homepage": "https://dota-quiz.herokuapp.com",
   "private": true,
   "scripts": {
+    "postinstall": "gulp build",
     "start": "node server.js"
   },
   "dependencies": {

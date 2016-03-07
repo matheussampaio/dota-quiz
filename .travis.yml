@@ -15,4 +15,4 @@ deploy:
   skip_cleanup: true
   buildpack: nodejs
   app:
-    master: jipa-server
+    master: dota-quiz
