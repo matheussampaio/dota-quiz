@@ -4,7 +4,7 @@
     .module('dotaQuiz')
     .factory('QuizFactory', QuizFactory);
 
-  function QuizFactory($log, _, API, StatsFactory, StorageService) {
+  function QuizFactory($log, $rootScope, _, DataService, StatsFactory, StorageService) {
     const _unknownObject = {
       icon: 'assets/images/icon/unknown.png',
       alt: 'Unknown Icon',
@@ -74,9 +74,12 @@
     function _fetchQuiz() {
       $log.info('fetching a new quiz...');
 
-      API.Quiz.query().$promise.then(data => {
-        const quiz = data[0];
+      DataService.getRandomQuiz().then(quiz => {
+        console.log('data', quiz);
         _populateData(quiz);
+        if (!DataService.USER_API) {
+          $rootScope.$digest();
+        }
       });
     }
 
