@@ -10,7 +10,7 @@
   function StatsController(StatsFactory) {
     const vm = this;
 
-    vm.data = StatsFactory;
+    vm.data = StatsFactory.data;
   }
 
 })();

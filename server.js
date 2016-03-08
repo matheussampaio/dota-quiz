@@ -57,11 +57,11 @@ app.use('/api', api(app));
 
 
 // serve index and view partials
-app.get('/', index.index);
+app.all('/*', index.index);
 
-app.use(function(req, res, next) {
-  res.status(404).send({ error: 'Page not found', status: 404 });
-});
+// app.use(function(req, res, next) {
+//   res.status(404).send({ error: 'Page not found', status: 404 });
+// });
 
 /**
  * Start Server

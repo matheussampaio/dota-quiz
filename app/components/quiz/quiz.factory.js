@@ -4,7 +4,7 @@
     .module('dotaQuiz')
     .factory('QuizFactory', QuizFactory);
 
-  function QuizFactory(_, API) {
+  function QuizFactory($log, _, API, StatsFactory, StorageService) {
     const _unknownObject = {
       icon: 'assets/images/icon/unknown.png',
       alt: 'Unknown Icon',
@@ -14,7 +14,6 @@
     const factory = {
       select: select,
       unselect: unselect,
-      getIconName: getIconName,
       start: start,
       data: {}
     }
@@ -24,26 +23,20 @@
     ///////////////////
 
     function start() {
-      API.Quiz.query().$promise.then(data => {
-        const quiz = data[0];
+      StatsFactory.start();
 
-        console.log(quiz);
-
-        quiz.target.icon = getIconName(quiz.target.name);
-
-        const answers = quiz.target.requirements.map(req => _.cloneDeep(_unknownObject));
-        const choices = _.shuffle(_.concat(quiz.target.requirements, quiz.wrong));
-        choices.forEach(c => c.icon = getIconName(c.name));
-
-        factory.data.target = quiz.target;
-        factory.data.answers = answers;
-        factory.data.choices = choices;
-      });
+      if (angular.isDefined(StorageService.getData())) {
+        $log.info('using data from $localStorage...');
+        // skip fetch if there already a quiz in loca storage
+        _.assign(factory.data, StorageService.getData());
+      } else {
+        _fetchQuiz();
+      }
     }
 
-    function getIconName(name) {
-      const iconName = name.toLowerCase().replace(/ /g, '_');
-      return `assets/images/icon/${iconName}.png`;
+    function _reset() {
+      StatsFactory.reset();
+      _fetchQuiz();
     }
 
     function select(item) {
@@ -56,8 +49,8 @@
           }
         }
 
-        if (answerComplete()) {
-          validateAnswer();
+        if (_answerComplete()) {
+          _validateAnswer();
         }
       }
     }
@@ -68,11 +61,48 @@
       if (!item.unknown) {
         item.selected = false;
 
+        for (let i of factory.data.choices) {
+          if (i.index === item.index) {
+            i.selected = false;
+          }
+        }
+
         factory.data.answers[index] = _.cloneDeep(_unknownObject);
       }
     }
 
-    function answerComplete() {
+    function _fetchQuiz() {
+      $log.info('fetching a new quiz...');
+
+      API.Quiz.query().$promise.then(data => {
+        const quiz = data[0];
+        _populateData(quiz);
+      });
+    }
+
+    function _populateData(quiz) {
+      quiz.target.icon = _getIconName(quiz.target.name);
+
+      const answers = quiz.target.requirements.map(req => _.cloneDeep(_unknownObject));
+      const choices = _.shuffle(_.concat(quiz.target.requirements, quiz.wrong));
+      choices.forEach((c, i) => {
+        c.icon = _getIconName(c.name)
+        c.index = i;
+      });
+
+      factory.data.target = quiz.target;
+      factory.data.answers = answers;
+      factory.data.choices = choices;
+
+      StorageService.setData(factory.data);
+    }
+
+    function _getIconName(name) {
+      const iconName = name.toLowerCase().replace(/ /g, '_');
+      return `assets/images/icon/${iconName}.png`;
+    }
+
+    function _answerComplete() {
       let complete = true;
 
       factory.data.answers.forEach(answer => {
@@ -84,13 +114,34 @@
       return complete;
     }
 
-    function validateAnswer() {
+    function _validateAnswer() {
       const answer = _.sortBy(factory.data.answers.map(answer => answer.name), e => e);
       const requirements = _.sortBy(factory.data.target.requirements.map(requirement => requirement.name), e => e);
 
       const answerCorrect = _.isEqual(answer, requirements);
 
-      console.log('answer:', answerCorrect);
+      if (answerCorrect) {
+        _handleCorrectAnswer();
+      } else {
+        _handleIncorrectAnswer();
+      }
+    }
+
+    function _handleCorrectAnswer() {
+      $log.info('correct answer!');
+      StatsFactory.correct();
+      _fetchQuiz();
+    }
+
+    function _handleIncorrectAnswer() {
+      $log.info('wrong answer. :(');
+
+      const guessesLeft = StatsFactory.incorrect();
+
+      if (guessesLeft <= 0) {
+        alert(`Final Score: ${StatsFactory.getScore()}`);
+        _reset();
+      }
     }
   }
 

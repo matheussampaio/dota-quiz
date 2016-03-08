@@ -11,7 +11,6 @@
     const vm = this;
 
     vm.data = QuizFactory.data;
-    vm.getIconName = QuizFactory.getIconName;
     vm.select = QuizFactory.select;
     vm.unselect = QuizFactory.unselect;
 
