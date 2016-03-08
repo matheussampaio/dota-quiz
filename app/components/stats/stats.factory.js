@@ -1,24 +1,25 @@
-(function() {
+'use strict';
 
-  angular
-    .module('dotaQuiz')
-    .factory('StatsFactory', StatsFactory);
+(function () {
+
+  StatsFactory.$inject = ["$log", "StorageService"];
+  angular.module('dotaQuiz').factory('StatsFactory', StatsFactory);
 
   function StatsFactory($log, StorageService) {
-    const _DefaultStats = {
+    var _DefaultStats = {
       inRow: 0,
       score: 0,
       guesses: 3
-    }
+    };
 
-    const factory = {
+    var factory = {
       start: start,
       reset: reset,
       correct: correct,
       incorrect: incorrect,
       getScore: getScore,
       data: {}
-    }
+    };
 
     return factory;
 
@@ -46,10 +47,10 @@
     }
 
     function correct() {
-      const base = 200;
-      const bonus = 30;
+      var base = 200;
+      var bonus = 30;
 
-      factory.data.score += base + (bonus * factory.data.inRow);
+      factory.data.score += base + bonus * factory.data.inRow;
       factory.data.inRow += 1;
     }
 
@@ -57,5 +58,4 @@
       return factory.data.score;
     }
   }
-
 })();

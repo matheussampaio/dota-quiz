@@ -1,10 +1,8 @@
-(function() {
+'use strict';
 
-  angular
-    .module('dotaQuiz')
-    .controller('AppController', AppController);
+(function () {
 
-  function AppController() {
-  }
+  angular.module('dotaQuiz').controller('AppController', AppController);
 
+  function AppController() {}
 })();

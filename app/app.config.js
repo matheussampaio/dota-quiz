@@ -1,7 +1,9 @@
-(function() {
+'use strict';
 
-  angular.module('dotaQuiz')
-    .config(dotaQuizConfig);
+(function () {
+
+  dotaQuizConfig.$inject = ["$stateProvider", "$urlRouterProvider"];
+  angular.module('dotaQuiz').config(dotaQuizConfig);
 
   function dotaQuizConfig($stateProvider, $urlRouterProvider) {
     // Ionic uses AngularUI Router which uses the concept of states
@@ -9,17 +11,15 @@
     // Set up the various states which the app can be in.
     // Each state's controller can be found in controllers.js
 
-    const appState = {
+    var appState = {
       url: '/',
       controller: 'AppController as appCtrl',
       templateUrl: 'app/app.html'
-    }
+    };
 
-    $stateProvider
-      .state('app', appState);
+    $stateProvider.state('app', appState);
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/');
   }
-
 })();

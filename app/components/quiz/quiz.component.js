@@ -1,14 +1,15 @@
-(function() {
+'use strict';
 
-  angular
-    .module('dotaQuiz')
-    .component('quiz', {
-      controller: QuizController,
-      templateUrl: 'quiz/quiz.html'
-    });
+(function () {
+
+  QuizController.$inject = ["QuizFactory"];
+  angular.module('dotaQuiz').component('quiz', {
+    controller: QuizController,
+    templateUrl: 'quiz/quiz.html'
+  });
 
   function QuizController(QuizFactory) {
-    const vm = this;
+    var vm = this;
 
     vm.data = QuizFactory.data;
     vm.select = QuizFactory.select;
@@ -21,7 +22,5 @@
     function activate() {
       QuizFactory.start();
     }
-
   }
-
 })();

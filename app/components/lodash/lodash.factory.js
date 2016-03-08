@@ -1,4 +1,6 @@
-(function() {
+'use strict';
+
+(function () {
 
   /**
    * Lodash wrapper module.
@@ -6,9 +8,8 @@
    * @ngdoc module
    * @name Lodash
    */
-  angular
-    .module('Lodash', [])
-    .factory('_', Lodash);
+  Lodash.$inject = ["$window"];
+  angular.module('Lodash', []).factory('_', Lodash);
 
   /**
     * Expose Lo-Dash through injectable factory, so we don't pollute / rely on global namespace
@@ -19,7 +20,6 @@
     * @memberof Lodash
     */
   function Lodash($window) {
-      return $window._;
+    return $window._;
   }
-
 })();
