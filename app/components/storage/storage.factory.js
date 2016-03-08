@@ -28,6 +28,23 @@
    deleteData() {
      delete this.$localStorage.data;
    }
+
+   getQuizLeft() {
+     if (angular.isUndefined(this.$localStorage.quizLeft)) {
+       this.$localStorage.quizLeft = [];
+     }
+
+     return this.$localStorage.quizLeft;
+   }
+
+   setQuizLeft(quizLeft) {
+     this.$localStorage.quizLeft = quizLeft;
+   }
+
+   deleteQuizLeft() {
+     delete this.$localStorage.quizLeft;
+   }
+
  }
 
   angular

@@ -172,10 +172,38 @@
       ]
     },
     {
-      "name": "Dagon",
+      "name": "Dagon 1",
       "requirements": [
         "Staff of Wizardry",
         "Null Talisman",
+        "Recipe"
+      ]
+    },
+    {
+      "name": "Dagon 2",
+      "requirements": [
+        "Dagon 1",
+        "Recipe"
+      ]
+    },
+    {
+      "name": "Dagon 3",
+      "requirements": [
+        "Dagon 2",
+        "Recipe"
+      ]
+    },
+    {
+      "name": "Dagon 4",
+      "requirements": [
+        "Dagon 3",
+        "Recipe"
+      ]
+    },
+    {
+      "name": "Dagon 5",
+      "requirements": [
+        "Dagon 4",
         "Recipe"
       ]
     },
@@ -191,11 +219,18 @@
       ]
     },
     {
-      "name": "Diffusal Blade",
+      "name": "Diffusal Blade 1",
       "requirements": [
         "Blade of Alacrity",
         "Blade of Alacrity",
         "Robe of the Magi",
+        "Recipe"
+      ]
+    },
+    {
+      "name": "Diffusal Blade 2",
+      "requirements": [
+        "Diffusal Blade 1",
         "Recipe"
       ]
     },
@@ -453,10 +488,24 @@
       "name": "Mystic Staff"
     },
     {
-      "name": "Necronomicon",
+      "name": "Necronomicon 1",
       "requirements": [
         "Staff of Wizardry",
         "Belt of Strength",
+        "Recipe"
+      ]
+    },
+    {
+      "name": "Necronomicon 2",
+      "requirements": [
+        "Necronomicon 1",
+        "Recipe"
+      ]
+    },
+    {
+      "name": "Necronomicon 3",
+      "requirements": [
+        "Necronomicon 2",
         "Recipe"
       ]
     },
@@ -796,11 +845,18 @@
   ];
 
   class DataService {
-    constructor(_, API) {
+    constructor(_, API, StorageService) {
       this._ = _;
       this.API = API;
       this.items = items;
-      this.itemsWithRequirements = this.items.filter(i => i.requirements && i.requirements.length > 0);
+      this.StorageService = StorageService;
+
+      this.itemsWithRequirements = StorageService.getQuizLeft();
+
+      if (this.itemsWithRequirements.length === 0) {
+        this.StorageService.setQuizLeft(this._.shuffle(this.items.filter(i => i.requirements && i.requirements.length > 0)));
+        this.itemsWithRequirements = this.StorageService.getQuizLeft();
+      }
 
       this.USER_API = false;
     }
@@ -810,9 +866,9 @@
         console.log('getting random quiz from api...');
         return this.API.Quiz.query().$promise.then(data => data[0]);
       } else {
-        console.log('getting random quiz from local...');
+        console.log('getting random quiz from local...:', this.itemsWithRequirements.length);
         return new Promise(resolve => {
-          const item = _.cloneDeep(this._.sample(this.itemsWithRequirements));
+          const item = _.cloneDeep(this.itemsWithRequirements.pop());
 
           const wrong = _.cloneDeep(this._.sampleSize(this._.reject(this.items, i => i.name === item.name), 9 - item.requirements.length));
 
@@ -838,6 +894,11 @@
       }
 
       return item;
+    }
+
+    reset() {
+      this.StorageService.setQuizLeft(this._.shuffle(this.items.filter(i => i.requirements && i.requirements.length > 0)));
+      this.itemsWithRequirements = this.StorageService.getQuizLeft();
     }
   }
 

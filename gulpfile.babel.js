@@ -39,14 +39,6 @@ gulp.task('build:templates', () => {
     .pipe(gulp.dest('www/app/'));
 });
 
-gulp.task('build:vendor', () => {
-  var vendorFiles = require('./vendor.json');
-
-  return gulp.src(vendorFiles)
-    .pipe(plugins.plumber())
-    .pipe(gulp.dest('www/vendor/'));
-});
-
 gulp.task('build:lint', () => {
   return gulp.src('**/*.js', { cwd: 'app/' })
     .pipe(plugins.plumber())
@@ -75,20 +67,6 @@ gulp.task('build:js', () => {
       .pipe(plugins.uglify())
     .pipe(plugins.sourcemaps.write('../maps'))
     .pipe(gulp.dest('www/app'));
-});
-
-gulp.task('build:js:server', () => {
-  return gulp.src([
-      '**/*.js',
-      '!**/*.spec.js'
-    ], {
-      cwd: 'server/'
-    })
-    .pipe(plugins.plumber())
-    .pipe(plugins.babel({
-      presets: ['es2015']
-    }))
-    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('build:scss', () => {
@@ -123,10 +101,6 @@ gulp.task('build:inject', () => {
     });
   };
 
-  var vendorFiles = require('./vendor.json');
-
-  var vendorsBasename = vendorFiles.map(vendor => 'vendor/' + path.basename(vendor));
-
   const jsFiles = [
     'app.module.js',
     'app.config.js',
@@ -151,10 +125,6 @@ gulp.task('build:inject', () => {
     .pipe(_inject(gulp.src(cssNaming, {
       cwd: 'www/'
     }), 'app'))
-    // inject vendors
-    .pipe(_inject(gulp.src(vendorsBasename, {
-      cwd: 'www/'
-    }), 'vendor'))
     // inject app.js
     .pipe(_inject(scriptStream, 'app'))
     .pipe(gulp.dest('www/'));
@@ -173,12 +143,6 @@ gulp.task('debug', ['build'], () => {
   // Javascript Web
   gulp.watch('app/**/*.js', ['build:js', 'build:lint']);
 
-  // Javascript Server
-  gulp.watch('server/**/*.js', ['build:js:server', 'build:lint']);
-
-  // Vendors
-  gulp.watch('./vendor.json', ['build:vendor']);
-
   // Templates
   gulp.watch(['app/**/*.html', '!app/index.html'], ['build:templates']);
 
@@ -192,10 +156,8 @@ gulp.task('build', (done) => {
     'build:fonts',
     'build:images',
     'build:templates',
-    'build:vendor',
     'build:lint',
     'build:js',
-    'build:js:server',
     'build:scss',
     'build:inject',
     done);

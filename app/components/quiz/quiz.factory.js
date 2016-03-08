@@ -35,6 +35,7 @@
     }
 
     function _reset() {
+      DataService.reset();
       StatsFactory.reset();
       _fetchQuiz();
     }
@@ -132,7 +133,13 @@
     function _handleCorrectAnswer() {
       $log.info('correct answer!');
       StatsFactory.correct();
-      _fetchQuiz();
+
+      if (StorageService.getQuizLeft().length > 0) {
+        _fetchQuiz();
+      } else {
+        alert(`Congratulation! You finished the Quiz with: ${StatsFactory.getScore()}`);
+        _reset();
+      }
     }
 
     function _handleIncorrectAnswer() {
