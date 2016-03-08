@@ -17,7 +17,7 @@
 .target-container,
 .answers-container,
 .choices-container,
-.score-continer {
+.stats-container {
   margin-bottom: 8px;
   padding: 2px;
   text-align: center;
@@ -50,4 +50,8 @@ img.disabled {
 
 .target-container {
   padding-top: 50px;
+}
+
+.stats-container {
+  padding-top: 20px;
 }
