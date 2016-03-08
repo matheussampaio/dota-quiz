@@ -66,10 +66,14 @@ gulp.task('build:js', () => {
       cwd: 'app/'
     })
     .pipe(plugins.plumber())
-    .pipe(plugins.babel({
-      presets: ['es2015']
-    }))
-    .pipe(plugins.ngAnnotate())
+    .pipe(plugins.sourcemaps.init())
+      .pipe(plugins.babel({
+        presets: ['es2015']
+      }))
+      .pipe(plugins.ngAnnotate())
+      .pipe(plugins.concat('app.js'))
+      .pipe(plugins.uglify())
+    .pipe(plugins.sourcemaps.write('../maps'))
     .pipe(gulp.dest('www/app'));
 });
 
@@ -132,7 +136,7 @@ gulp.task('build:inject', () => {
     '**/*.service.js',
     '**/*.factory.js',
     '**/*.*.js',
-    'templates.js'
+    '*.js'
   ];
 
   var scriptFiles = jsFiles.map(file => 'app/' + file);
@@ -195,4 +199,9 @@ gulp.task('build', (done) => {
     'build:scss',
     'build:inject',
     done);
+});
+
+gulp.task('deploy', () => {
+  return gulp.src('./www/**/*')
+    .pipe(plugins.ghPages());
 });

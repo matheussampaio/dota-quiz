@@ -5,7 +5,6 @@
     .factory('API', API);
 
   function API($resource) {
-    // If you want to use `$ ionic serve`, uncomment this line.
     const DOMAIN = `/api`;
 
     const vm = {

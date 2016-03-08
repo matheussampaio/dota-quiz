@@ -75,7 +75,6 @@
       $log.info('fetching a new quiz...');
 
       DataService.getRandomQuiz().then(quiz => {
-        console.log('data', quiz);
         _populateData(quiz);
         if (!DataService.USER_API) {
           $rootScope.$digest();
