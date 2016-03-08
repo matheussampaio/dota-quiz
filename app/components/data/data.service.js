@@ -845,9 +845,9 @@
   ];
 
   class DataService {
-    constructor(_, API, StorageService) {
+    constructor(_, Log, StorageService) {
       this._ = _;
-      this.API = API;
+      this.Log = Log;
       this.items = items;
       this.StorageService = StorageService;
 
@@ -857,46 +857,47 @@
         this.StorageService.setQuizLeft(this._.shuffle(this.items.filter(i => i.requirements && i.requirements.length > 0)));
         this.itemsWithRequirements = this.StorageService.getQuizLeft();
       }
-
-      this.USER_API = false;
     }
 
     getRandomQuiz() {
-      if (this.USER_API) {
-        console.log('getting random quiz from api...');
-        return this.API.Quiz.query().$promise.then(data => data[0]);
-      } else {
-        console.log('getting random quiz from local...:', this.itemsWithRequirements.length);
-        return new Promise(resolve => {
-          const item = _.cloneDeep(this.itemsWithRequirements.pop());
+      this.Log.log('Getting a random quiz...');
 
-          const wrong = _.cloneDeep(this._.sampleSize(this._.reject(this.items, i => i.name === item.name), 9 - item.requirements.length));
+      return new Promise(resolve => {
+        const item = _.cloneDeep(this.itemsWithRequirements.pop());
 
-          const quiz = {
-            target: item,
-            wrong: wrong
-          }
 
-          quiz.target.requirements.forEach((e, i) => {
-            quiz.target.requirements[i] = this.getItem(e);
-          });
+        const wrong = _.cloneDeep(this._.sampleSize(this._.reject(this.items, i => i.name === item.name), 9 - item.requirements.length));
 
-          resolve(quiz);
+        const quiz = {
+          target: item,
+          wrong: wrong
+        }
+
+        quiz.target.requirements.forEach((e, i) => {
+          quiz.target.requirements[i] = this.getItem(e);
         });
-      }
+
+        this.Log.info('Quiz:', quiz);
+        this.Log.info(`${this.itemsWithRequirements.length} quizes left.`);
+
+        resolve(quiz);
+      });
     }
 
     getItem(name) {
       const item = _.cloneDeep(this._.find(this.items, i => i.name.toLowerCase() === name.toLowerCase()));
 
       if (!item) {
-        throw new Error(`Item not found: ${name}`);
+        const error = new Error(`Item not found: ${name}`);
+        this.Log.error(error);
+        throw new Error(error);
       }
 
       return item;
     }
 
     reset() {
+      this.Log.info('Reseting quiz data...');
       this.StorageService.setQuizLeft(this._.shuffle(this.items.filter(i => i.requirements && i.requirements.length > 0)));
       this.itemsWithRequirements = this.StorageService.getQuizLeft();
     }

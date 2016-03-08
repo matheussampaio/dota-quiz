@@ -4,7 +4,7 @@
     .module('dotaQuiz')
     .factory('QuizFactory', QuizFactory);
 
-  function QuizFactory($log, $rootScope, _, DataService, StatsFactory, StorageService) {
+  function QuizFactory($rootScope, _, Log, DataService, StatsFactory, StorageService) {
     const _unknownObject = {
       icon: 'assets/images/icon/unknown.png',
       alt: 'Unknown Icon',
@@ -26,7 +26,7 @@
       StatsFactory.start();
 
       if (angular.isDefined(StorageService.getData())) {
-        $log.info('using data from $localStorage...');
+        Log.info('Quiz found in localStorage, using it.');
         // skip fetch if there already a quiz in loca storage
         _.assign(factory.data, StorageService.getData());
       } else {
@@ -42,6 +42,8 @@
 
     function select(item) {
       if (!item.selected) {
+        Log.info(`Item selected:`, item);
+
         for (let i in factory.data.answers) {
           if (factory.data.answers[i].unknown === true) {
             item.selected = true;
@@ -60,6 +62,8 @@
       let item = factory.data.answers[index];
 
       if (!item.unknown) {
+        Log.info(`Item unselected:`, item);
+
         item.selected = false;
 
         for (let i of factory.data.choices) {
@@ -73,17 +77,15 @@
     }
 
     function _fetchQuiz() {
-      $log.info('fetching a new quiz...');
-
       DataService.getRandomQuiz().then(quiz => {
         _populateData(quiz);
-        if (!DataService.USER_API) {
-          $rootScope.$digest();
-        }
+        $rootScope.$digest();
       });
     }
 
     function _populateData(quiz) {
+      Log.info('Updating UI with new Quiz');
+
       quiz.target.icon = _getIconName(quiz.target.name);
 
       const answers = quiz.target.requirements.map(req => _.cloneDeep(_unknownObject));
@@ -131,23 +133,27 @@
     }
 
     function _handleCorrectAnswer() {
-      $log.info('correct answer!');
+      Log.info('Correct answer.');
       StatsFactory.correct();
 
       if (StorageService.getQuizLeft().length > 0) {
         _fetchQuiz();
       } else {
+        Log.info('No quiz left, end of the game.');
         alert(`Congratulation! You finished the Quiz with: ${StatsFactory.getScore()}`);
         _reset();
       }
     }
 
     function _handleIncorrectAnswer() {
-      $log.info('wrong answer. :(');
+      Log.info('Wrong answer.');
 
       const guessesLeft = StatsFactory.incorrect();
 
+      Log.info(`Guesses: ${guessesLeft}`);
+
       if (guessesLeft <= 0) {
+        Log.info(`You lose.`);
         alert(`Final Score: ${StatsFactory.getScore()}`);
         _reset();
       }

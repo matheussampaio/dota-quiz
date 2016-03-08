@@ -4,7 +4,7 @@
     .module('dotaQuiz')
     .factory('StatsFactory', StatsFactory);
 
-  function StatsFactory($log, StorageService) {
+  function StatsFactory(Log, StorageService) {
     const _DefaultStats = {
       inRow: 0,
       score: 0,
@@ -27,14 +27,16 @@
     function start() {
       if (angular.isUndefined(StorageService.getStats())) {
         StorageService.setStats(_DefaultStats);
+        Log.info('Stats not found in localStorage, creating a new one.');
       } else {
-        $log.info('using stats from $localStorage...');
+        Log.info('Stats found in localStorage, using it.');
       }
 
       factory.data = StorageService.getStats();
     }
 
     function reset() {
+      Log.info('Reseting Stats...');
       _.assign(factory.data, _DefaultStats);
     }
 

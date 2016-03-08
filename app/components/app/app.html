@@ -5,7 +5,10 @@
 
 <footer>
   <!-- Github Project -->
-  <a href="https://github.com/matheussampaio/dota-quiz/issues/new" title="Dota Quiz on Github" target="_blank">
+  <a title="Dota Quiz on Github"
+    target="_blank"
+    ng-href="https://github.com/matheussampaio/dota-quiz/issues/new{{appCtrl.urlReport}}" 
+    ng-click="appCtrl.updateReport()">
     report a bug
   </a>
 </footer>
